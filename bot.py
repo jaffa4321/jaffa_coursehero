@@ -24,17 +24,13 @@ bot = Bot(token=BOT_TOKEN) # type: ignore
 client = Dispatcher(bot)
 
 # # Initialize MongoDB
-# username = urllib.parse.quote_plus(os.environ.get('MONGO_USERNAME'))
-# password = urllib.parse.quote_plus(os.environ.get('MONGO_PASSWORD'))
-# cluster = os.environ.get('MONGO_CLUSTER')
-# database = os.environ.get('MONGO_DATABASE')
-# collection = os.environ.get('MONGO_COLLECTION')
-# uri = f"mongodb+srv://{username}:{password}@{cluster}/{database}?retryWrites=true&w=majority"
-# cluster = MongoClient(uri, tlsCAFile=certifi.where())
+mongo_url = os.environ.get("MONGO_URL")
 
-# db = cluster["COURSEHERO"]
+cluster = MongoClient(mongo_url, tlsCAFile=certifi.where())
 
-# user_collection = db["USERS"]
+db = cluster["COURSEHERO"]
+
+user_collection = db["USERS"]
 
 # main_group_id = int(os.environ.get("GROUP_ID"))
 # main_group_link = os.environ.get("MAIN_GROUP_LINK")
@@ -48,7 +44,12 @@ async def start(message: types.Message):
     user_name = message.from_user.full_name
     user_username = message.from_user.username
     user_mention = message.from_user.mention
-    await message.reply(f"Hello {user_mention}! Welcome to CourseHero Bot. I am here to help you with your queries. Please use /help to know more about me.")
+    user = user_collection.find_one({
+        "user_id": user_id
+    })
+    if user is None:
+        user_collection.insert_one({"user_id": user_id, "user_name": user_name, "user_username": user_username, "user_mention": user_mention})
+    await message.reply(f"Hello {user_mention}! Welcome to CourseHero Bot. I am here to help you with your queries. Please use /help to know more about me. Jaffa")
 
 if __name__ == '__main__':
     executor.start_polling(client, skip_updates=True)
