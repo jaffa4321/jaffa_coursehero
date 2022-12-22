@@ -36,10 +36,10 @@ client = Dispatcher(bot)
 
 # user_collection = db["USERS"]
 
-main_group_id = int(os.environ.get("GROUP_ID"))
-main_group_link = os.environ.get("MAIN_GROUP_LINK")
-admin_id = os.environ.get("ADMIN_ID")
-admin = os.environ.get("ADMIN")
+# main_group_id = int(os.environ.get("GROUP_ID"))
+# main_group_link = os.environ.get("MAIN_GROUP_LINK")
+# admin_id = os.environ.get("ADMIN_ID")
+# admin = os.environ.get("ADMIN")
 
 # # START BOT
 @client.message_handler(commands=['start'])
